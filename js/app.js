@@ -1,11 +1,19 @@
 var X;
 var Y;
 var score = 0;
-//The class contain some properte of bugs.
-var Enemy = function(x,y,speed) {
-    this.sprite = 'images/enemy-bug.png';
+//The character is the superclass of enemy and player
+var Character = function(x,y,sprite){
     this.x = x;
     this.y = y;
+    this.sprite = sprite;
+};
+Character.prototype.set = function(x,y){
+  this.x = x;
+  this.y = y;
+};
+//The class contain some properte of bugs.
+var Enemy = function(x,y,speed) {
+    Character.call(this,x,y,'images/enemy-bug.png');
     this.speed = speed;
 };
 //The function update change the enemy's position
@@ -28,8 +36,7 @@ Enemy.prototype.update = function(dt) {
 };
 //The function set set the position and speed for bugs.
 Enemy.prototype.set = function(x,y,speed){
-    this.x = x;
-    this.y = y;
+    Character.prototype.set.call(this,x,y);
     this.speed = speed;
 };
 //The function render draw bugs
@@ -38,6 +45,7 @@ Enemy.prototype.render = function() {
 };
 
 var Player = function(x,y){
+
     this.roles = [
         'images/char-boy.png',
         'images/char-cat-girl.png',
@@ -47,10 +55,7 @@ var Player = function(x,y){
     ];
     this.index = 0;
     this.flag = false;
-    this.sprite = this.roles[this.index];
-    this.x = x;
-    this.y = y;
-    this.socre = 0;
+    Character.call(this,x,y,this.roles[this.index]);
 };
 Player.prototype.update = function(){
 
@@ -63,8 +68,7 @@ Player.prototype.render = function(){
 };
 //The function set set the position and speed for player.
 Player.prototype.set = function(x,y){
-  this.x = x;
-  this.y = y;
+  Character.call(this,x,y);
   this.flag = false;
   X = x;
   Y = y;
