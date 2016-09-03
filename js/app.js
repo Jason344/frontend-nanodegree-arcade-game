@@ -11,6 +11,16 @@ Character.prototype.set = function(x,y){
   this.x = x;
   this.y = y;
 };
+Character.prototype.reset = function(){
+      enemy0.set(0,65,212);
+      enemy1.set(-100,150,321);
+      enemy2.set(-200,220,489);
+      enemy3.set(-133,65,357);
+      enemy4.set(-113,150,132);
+      enemy5.set(-140,220,297);
+      player.set(300,390);
+};
+
 //The class contain some properte of bugs.
 var Enemy = function(x,y,speed) {
     Character.call(this,x,y,'images/enemy-bug.png');
@@ -28,7 +38,7 @@ Enemy.prototype.update = function(dt) {
     var dis = Math.sqrt(dx*dx+dy*dy);
     if(dis < 50)
     {
-      reset();
+      Character.prototype.reset.call();
       if(score >= 5)
         score = score - 5;
       else score = 0;
@@ -45,7 +55,6 @@ Enemy.prototype.render = function() {
 };
 
 var Player = function(x,y){
-
     this.roles = [
         'images/char-boy.png',
         'images/char-cat-girl.png',
@@ -69,6 +78,7 @@ Player.prototype.render = function(){
 //The function set set the position and speed for player.
 Player.prototype.set = function(x,y){
   Character.call(this,x,y);
+  this.sprite = this.roles[this.index];
   this.flag = false;
   X = x;
   Y = y;
@@ -86,12 +96,12 @@ Player.prototype.handleInput = function(key){
                   this.y = this.y - TILE_HEIGHT;
                 else if(this.flag && this.y>50){
                   score = score + 10;
-                  reset();
+                    Character.prototype.reset.call();
                 }
                 break;
       case 'space' :
                 if(!this.flag){
-                  var newIndex = (this.index+1) % 5;
+                  var newIndex = (this.in dex+1) % 5;
                   this.sprite = this.roles[newIndex];
                   this.index = newIndex;
                 }
@@ -114,16 +124,6 @@ var enemy4 = new Enemy(-113,150,132);
 var enemy5 = new Enemy(-140,220,297);
 allEnemies.push(enemy0,enemy1,enemy2,enemy3,enemy4,enemy5);
 var player = new Player(300,390);
-var reset = function(){
-    enemy0.set(0,65,212);
-    enemy1.set(-100,150,321);
-    enemy2.set(-200,220,489);
-    enemy3.set(-133,65,357);
-    enemy4.set(-113,150,132);
-    enemy5.set(-140,220,297);
-    player.set(300,390);
-};
-
 
 document.addEventListener('keyup', function(e) {
     var allowedKeys = {
