@@ -31,7 +31,7 @@ Enemy.prototype.set = function(x,y,speed){
     this.x = x;
     this.y = y;
     this.speed = speed;
-}
+};
 //The function render draw bugs
 Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
@@ -71,13 +71,15 @@ Player.prototype.set = function(x,y){
 };
 //The function handleInput deal with keyboard input
 Player.prototype.handleInput = function(key){
+  var TILE_WIDTH = 101,
+      TILE_HEIGHT = 83;
     switch (key) {
-      case 'left': if(this.flag && this.x>60) this.x = this.x - 101;break;
-      case 'down':if(this.flag && this.y<350) this.y = this.y + 83;break;
-      case 'right':if(this.flag && this.x<400) this.x = this.x + 101;break;
+      case 'left': if(this.flag && this.x>60) this.x = this.x - TILE_WIDTH;break;
+      case 'down':if(this.flag && this.y<350) this.y = this.y + TILE_HEIGHT;break;
+      case 'right':if(this.flag && this.x<400) this.x = this.x + TILE_WIDTH;break;
       case 'up':
                 if(this.flag && this.y>100)
-                  this.y = this.y - 83;
+                  this.y = this.y - TILE_HEIGHT;
                 else if(this.flag && this.y>50){
                   score = score + 10;
                   reset();
@@ -116,7 +118,7 @@ var reset = function(){
     enemy4.set(-113,150,132);
     enemy5.set(-140,220,297);
     player.set(300,390);
-}
+};
 
 
 document.addEventListener('keyup', function(e) {
