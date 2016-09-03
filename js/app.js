@@ -1,12 +1,15 @@
 var X;
 var Y;
+var score = 0;
+//The class contain some properte of bugs.
 var Enemy = function(x,y,speed) {
     this.sprite = 'images/enemy-bug.png';
     this.x = x;
     this.y = y;
     this.speed = speed;
 };
-
+//The function update change the enemy's position
+//and check if player have collision with bugs
 Enemy.prototype.update = function(dt) {
     var newX = this.x + dt * this.speed;
     if(newX < 600)
@@ -16,44 +19,85 @@ Enemy.prototype.update = function(dt) {
     var dy = Y - this.y;
     var dis = Math.sqrt(dx*dx+dy*dy);
     if(dis < 50)
+    {
       reset();
+      if(score >= 5)
+        score = score - 5;
+      else score = 0;
+    }
 };
+//The function set set the position and speed for bugs.
 Enemy.prototype.set = function(x,y,speed){
     this.x = x;
     this.y = y;
     this.speed = speed;
 }
+//The function render draw bugs
 Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
 var Player = function(x,y){
-    this.sprite = 'images/char-boy.png';
+    this.roles = [
+        'images/char-boy.png',
+        'images/char-cat-girl.png',
+        'images/char-horn-girl.png',
+        'images/char-pink-girl.png',
+        'images/char-princess-girl.png'
+    ];
+    this.index = 0;
+    this.flag = false;
+    this.sprite = this.roles[this.index];
     this.x = x;
     this.y = y;
+    this.socre = 0;
 };
 Player.prototype.update = function(){
 
 };
+//The function render draw bugs
 Player.prototype.render = function(){
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+    ctx.font = "48px serif";
+    ctx.strokeText(score.toString(), 440, 115);
 };
-Player.prototype.handleInput = function(dir){
-    switch (dir) {
-      case 'left': if(this.x>60) this.x = this.x - 101;break;
-      case 'down':if(this.y<350) this.y = this.y + 83;break;
-      case 'right':if(this.x<400) this.x = this.x + 101;break;
+//The function set set the position and speed for player.
+Player.prototype.set = function(x,y){
+  this.x = x;
+  this.y = y;
+  this.flag = false;
+  X = x;
+  Y = y;
+};
+//The function handleInput deal with keyboard input
+Player.prototype.handleInput = function(key){
+    switch (key) {
+      case 'left': if(this.flag && this.x>60) this.x = this.x - 101;break;
+      case 'down':if(this.flag && this.y<350) this.y = this.y + 83;break;
+      case 'right':if(this.flag && this.x<400) this.x = this.x + 101;break;
       case 'up':
-                if(this.y>100)
+                if(this.flag && this.y>100)
                   this.y = this.y - 83;
-                else if(this.y>50)
+                else if(this.flag && this.y>50){
+                  score = score + 10;
                   reset();
+                }
+                break;
+      case 'space' :
+                if(!this.flag){
+                  var newIndex = (this.index+1) % 5;
+                  this.sprite = this.roles[newIndex];
+                  this.index = newIndex;
+                }
+                break;
+      case 'enter' :
+                this.flag = true;
                 break;
       default:this.x = this.x; this.y = this.y;break;
     }
     X = this.x;
     Y = this.y;
-}
+};
 
 var allEnemies = [];
 var enemy0 = new Enemy(0,65,212);
@@ -71,7 +115,7 @@ var reset = function(){
     enemy3.set(-133,65,357);
     enemy4.set(-113,150,132);
     enemy5.set(-140,220,297);
-    player = new Player(300,390);
+    player.set(300,390);
 }
 
 
@@ -80,7 +124,9 @@ document.addEventListener('keyup', function(e) {
         37: 'left',
         38: 'up',
         39: 'right',
-        40: 'down'
+        40: 'down',
+        32: 'space',
+        13: 'enter'
     };
 
     player.handleInput(allowedKeys[e.keyCode]);
